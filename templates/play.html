@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <style>
+            h1 {
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+
+        <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.plyr.io/1.1.5/plyr.css">
+    </head>
+    <body>
+      <div class="container">
+        <a href="../" class="btn">&laquo; Videos</a>
+        <h1>{{cleanupName .Name}}</h1>
+
+        <a href="{{sign .Name}}" target="_blank" class="btn">Download</a>
+
+        <div class="player">
+          <video controls crossorigin>
+            <!-- Video files -->
+            <source src="{{sign .Name}}" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <script>
+        (function(d,p){
+            var a=new XMLHttpRequest(),
+                b=d.body;
+            a.open("GET",p,!0);
+            a.send();
+            a.onload=function(){
+                var c=d.createElement("div");
+                c.style.display="none";
+                c.innerHTML=a.responseText;
+                b.insertBefore(c,b.childNodes[0])
+            }
+        })(document,"https://cdn.plyr.io/1.1.5/sprite.svg");
+      </script>
+      <!-- Plyr core script -->
+      <script src="//cdn.plyr.io/1.1.5/plyr.js"></script>
+      <script>plyr.setup();</script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+      <script src="/js/vendor/bootstrap.min.js"></script>
+      <script src="/js/main.js"></script>
+    </body>
+</html>
