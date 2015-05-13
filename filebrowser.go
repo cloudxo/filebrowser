@@ -31,7 +31,7 @@ const (
 
 var (
 	jsonFile       = flag.String("creds", "key.json", "A path to your JSON key file for your service account downloaded from Google Developer Console, not needed if you run it on Compute Engine instances.")
-	host           = flag.String("host", "127.0.0.1", "IP of host to run webserver on")
+	host           = flag.String("host", "0.0.0.0", "IP of host to run webserver on")
 	port           = flag.Int("port", 8080, "Port to run webserver on")
 	googleAccessId = flag.String("googleAccessId", "115985846185-gmc25e88t3ochacb6hednp2obujn0c5k@developer.gserviceaccount.com", "Google service account client email address xx@developer.gserviceaccount.com")
 	pemFilename    = flag.String("pemFilename", "key.pem", "Google Service Account PEM file.")
