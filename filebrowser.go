@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -55,9 +56,7 @@ func (a ByUpdated) Less(i, j int) bool { return a[i].Updated > a[j].Updated }
 
 func (s *Server) SignUrl(objectName string) string {
 	s.StorageAccessOptions.Expires = time.Now().Add(time.Second * 60 * 60 * 6) //expire in 6 hours
-	escapedName := url.QueryEscape(objectName)
-	escapedName = strings.Replace(escapedName, "+", "%20", -1)
-	getURL, err := cloud.SignedURL(bucketName, escapedName, s.StorageAccessOptions)
+	getURL, err := cloud.SignedURL(bucketName, UrlEscape(objectName), s.StorageAccessOptions)
 	if err == nil {
 		return getURL
 	} else {
@@ -99,6 +98,17 @@ func (s *Server) RootHandler(response http.ResponseWriter, request *http.Request
 	s.Templates.ExecuteTemplate(response, "index.html", res)
 }
 
+type VideoInfo struct {
+	Name        string
+	VideoUrl    string
+	SubUrl      string
+	DownloadUrl string
+}
+
+func UrlEscape(input string) string {
+	return strings.Replace(url.QueryEscape(input), "+", "%20", -1)
+}
+
 func (s *Server) PlayHandler(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-type", "text/html")
 	vars := mux.Vars(request)
@@ -113,7 +123,17 @@ func (s *Server) PlayHandler(response http.ResponseWriter, request *http.Request
 		}).Warn("Failed getting info for video.")
 	}
 
-	s.Templates.ExecuteTemplate(response, "play.html", res)
+	mkvRegexp := regexp.MustCompile("\\.mp4$")
+	signedUrl := s.SignUrl(res.Name)
+
+	info := VideoInfo{
+		Name:        CleanupName(res.Name),
+		VideoUrl:    signedUrl,
+		SubUrl:      s.SignUrl(mkvRegexp.ReplaceAllString(res.Name, ".vtt")),
+		DownloadUrl: signedUrl + "&response-content-disposition=attachment%3B%20filename%3D%22" + UrlEscape(res.Name),
+	}
+
+	s.Templates.ExecuteTemplate(response, "play.html", info)
 }
 
 func main() {

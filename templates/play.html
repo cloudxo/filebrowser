@@ -23,14 +23,19 @@
     <body>
       <div class="container">
         <a href="../" class="btn">&laquo; Videos</a>
-        <h1>{{cleanupName .Name}}</h1>
+        <h1>{{.Name}}</h1>
 
-        <a href="{{sign .Name}}" target="_blank" class="btn">Download</a>
+        <a href="{{.DownloadUrl}}" class="btn" download>Download</a>
 
         <div class="player">
           <video controls crossorigin>
             <!-- Video files -->
-            <source src="{{sign .Name}}" type="video/mp4">
+            <source src="{{.VideoUrl}}" type="video/mp4">
+
+            <!-- Text track file -->
+            <track kind="captions" label="English"
+                   src="{{.SubUrl}}"
+                   srclang="en" default>
           </video>
         </div>
       </div>
